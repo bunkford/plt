@@ -79,6 +79,8 @@ class GUI:
 
         # edit Menu
         editmenu = Menu(self.menubar, tearoff=0)
+        editmenu.add_command(label="Select All", command=self.select_all)
+        editmenu.add_separator()
         editmenu.add_command(label="Remove Duplicates", command=self.remove_dups)
         editmenu.add_separator()
         self.menubar.add_cascade(label="Edit", menu=editmenu)
@@ -896,6 +898,29 @@ class GUI:
                 
         return [closest_index, closest_data, closest, closest_side]
         
+    def select_all(self):
+
+        x1, y1, x2, y2 = self.canvas.bbox(ALL)
+        items = self.canvas.find_overlapping(x1, y1, x2, y2)
+        for item in items:
+            self.root.update()
+            if "plt" in self.canvas.gettags(item):
+                self.canvas.itemconfig(item, dash=(4, 4))
+                self.canvas.addtag_withtag("selected", item)
+                coords = self.canvas.coords(item)
+                # check we aren't duplicating grippers for multi select
+                grippers = self.canvas.find_withtag('gripper')
+                for grip in grippers:
+                    c = self.canvas.coords(grip)
+                    if c == [coords[0]-2,coords[1]-2,coords[0]+2,coords[1]+2] or c == [coords[2]-2,coords[3]-2,coords[2]+2,coords[3]+2]:
+                        self.canvas.delete(grip)
+                                
+                self.canvas.create_rectangle(coords[0]-2,coords[1]-2,coords[0]+2,coords[1]+2, fill="#FFFF00", tags=("gripper"))
+                self.canvas.create_rectangle(coords[2]-2,coords[3]-2,coords[2]+2,coords[3]+2, fill="#FFFF00", tags=("gripper"))
+
+
+        self.status.set('Selected: ' + str(len(self.canvas.find_withtag("selected"))))
+
     def release(self, event):
         self.scan_mark = False
         self.selected_points = None
