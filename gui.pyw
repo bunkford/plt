@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as patches
 
+import itertools
 import unicodedata
 import time
 import os
@@ -78,6 +79,8 @@ class GUI:
 
         # edit Menu
         editmenu = Menu(self.menubar, tearoff=0)
+        editmenu.add_command(label="Remove Duplicates", command=self.remove_dups)
+        editmenu.add_separator()
         self.menubar.add_cascade(label="Edit", menu=editmenu)
 
 
@@ -1099,6 +1102,26 @@ class GUI:
         bbox = self.canvas.bbox(ALL)
         self.canvas.move(ALL, 0-bbox[0], 0-bbox[1])
 
+    def get_pen_from_color(self, color):
+        if color == "#FFFFFF": # white
+            return 0
+        elif color == "#000000": # black
+            return 1
+        elif color == "#FF0000": # red
+            return 2
+        elif color == "#00FF00": # green
+            return 3
+        elif color == "#0000FF": # blue
+            return 4
+        elif color == "#00FFFF": # cyan
+            return 5
+        elif color == "#FF00FF": # magenta
+            return 6
+        elif color == "#FFFF00": # yellow
+            return 7
+        else: 
+            return 0
+
     def get_pen_color(self, pen):
         if pen == 0: # white
             return "#FFFFFF"
@@ -1262,7 +1285,37 @@ class GUI:
 
     def remove_duplicates(self, coord_list):
         return [coord_list[i] for i in range(len(coord_list)) if i == 0 or coord_list[i] != coord_list[i-1]]
+    
+    def remove_dups(self):
+
+        items = self.canvas.find_all()
         
+        bbox = self.canvas.bbox(ALL)
+        height = bbox[2] - bbox[0] 
+
+         #create a list of lines
+        c = []
+        for i, item in enumerate(items):
+            t = self.canvas.type(item)
+            if t == "line":                    
+                x1, y1, x2, y2 = self.canvas.coords(item)
+                c.append([round(x1, 2), round(height - y1, 2),round(x2, 2), round(height - y2, 2)])
+
+        s = c # create list to sort perserving index
+        for i, item in enumerate(c):
+           s[i] = sorted(item)
+
+        cleanlist = []
+        gooditems = []
+        for i, item in enumerate(s):
+            if item not in cleanlist:
+                cleanlist.append(item)
+                gooditems.append(items[i])
+
+        for i, item in enumerate(items):
+            if item not in gooditems:
+                self.canvas.delete(item)
+
     def create_hpgl(self):        
         # reset any selected item
         selected = self.canvas.find_withtag("selected")
