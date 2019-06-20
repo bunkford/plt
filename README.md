@@ -17,6 +17,8 @@ The generated .plt files work on the engraver I have available, probably not sta
 | M        | Move selected
 | ESC      | Clear commands, go back to select mode.
 | T        | Text Mode. Align with mouse, and start typing. Enter to finish.
+| DEL      | When lines are selected, deletes them
+| Ctrl     | When this is pressed, lines don't snap to eachother
 
 ## Fonts
 
@@ -28,4 +30,4 @@ You can use this menu option to visualize the path the plotter is going to take.
 
 ## Pens
 
-I implemented basic support for changing pens. The engraver I tested on doesn't support this option, but it should work.
+I implemented basic support for changing pens. The engraver I tested on doesn't support this option, but it should work. You select the lines you want to be a different pen, and then use the menu to change them. Everything is drawn in pen 1 by default. 
