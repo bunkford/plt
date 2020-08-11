@@ -83,10 +83,19 @@ class GUI:
         editmenu.add_separator()
         editmenu.add_command(label="Remove Duplicates", command=self.remove_dups)
         editmenu.add_separator()
-        self.menubar.add_cascade(label="Edit", menu=editmenu)
+        self.menubar.add_cascade(label="Edit", menu=editmenu)	
 
-
-    
+        # command Menu
+        commandmenu = Menu(self.menubar, tearoff=0)
+        commandmenu.add_command(label="Select <Esc>", command=lambda:self.root.event_generate("<Escape>"))
+        commandmenu.add_command(label="Text <T>", command=lambda:self.root.event_generate("<T>"))
+        commandmenu.add_command(label="Circle <C>", command=lambda:self.root.event_generate("<C>"))
+        commandmenu.add_command(label="Line <L>", command=lambda:self.root.event_generate("<L>"))
+        commandmenu.add_command(label="Pan <P>", command=lambda:self.root.event_generate("<H>"))
+        commandmenu.add_command(label="Move Selected <M>", command=lambda:self.root.event_generate("<M>"))
+        commandmenu.add_command(label="Scale <S>", command=lambda:self.root.event_generate("<S>"))
+        self.menubar.add_cascade(label="Commands", menu=commandmenu)
+		
         # change pen Menu        
         changepenmenu = Menu(self.menubar, tearoff=0)
         changepenmenu.add_command(label="Pen 1", foreground="#000000", command=lambda:self.changepen(1))
